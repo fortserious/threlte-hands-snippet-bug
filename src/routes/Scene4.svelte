@@ -1,30 +1,24 @@
 <script lang="ts">
-  import { T } from '@threlte/core';
+  import { T, useThrelte } from '@threlte/core';
   import { Controller, Hand, useHand, XR } from '@threlte/xr'
-  import { onMount, tick } from 'svelte';
-  import { Material, MeshBasicMaterial, SkinnedMesh } from 'three';
+  import { MeshBasicMaterial, SkinnedMesh } from 'three';
+  import { XRHandModelFactory } from 'three/examples/jsm/Addons.js';
 
-const hand = useHand('left')
+  const factory = new XRHandModelFactory(null, turnRed);
 
+  const { renderer} = useThrelte();
+  const{ xr } = renderer;
+  const hand = useHand('left')
+  const model = factory.createHandModel(xr.getHand(0), 'mesh');
   const store = $derived(hand);
- const model = $derived($store?.model);
-
-$inspect("model", model);
 
 export async function turnRed()
 {
-    await tick();
-
-    console.log(model);
-        if (model?.children?.[0]?.children?.[0])
-{
-    console.log("turning hand red");
-    (model.children[0].children[0] as SkinnedMesh).material = new MeshBasicMaterial({color: 0xff0000});
-}
-else
-{
-    console.log("no skinnedmesh found", $state.snapshot(model));
-}
+    if (model?.children?.[0]?.children?.[0])
+    {
+        console.log("turning hand red");
+        (model.children[0].children[0] as SkinnedMesh).material = new MeshBasicMaterial({color: 0xff0000});
+    }
 }
 
 </script>
@@ -40,7 +34,7 @@ else
 
 <XR />
 
-<Hand left onconnected={turnRed}>
+<Hand left>
 {#if $store?.hand}
 <T is={$store.hand}>    
     <T is={model} />           
@@ -48,9 +42,7 @@ else
 {/if}
 </Hand>
 
-<Hand right>
-
-</Hand>
+<Hand right />
 
 <Controller left />
 <Controller right />

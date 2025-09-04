@@ -1,32 +1,32 @@
 <script lang="ts">
   import { Canvas } from '@threlte/core'
-  import { VRButton, XR } from '@threlte/xr'
+  import { VRButton } from '@threlte/xr'
   import Scene from './Scene.svelte'
-  import { Button, List, Pane, Textarea, ThemeUtils } from 'svelte-tweakpane-ui';
+  import { List, Pane, Textarea, ThemeUtils } from 'svelte-tweakpane-ui';
   import { config } from '$lib/store.svelte';
   import Scene2 from './Scene2.svelte';
   import Scene3 from './Scene3.svelte';
   import Scene4 from './Scene4.svelte';
-  import { label } from 'three/tsl';
-
-  let scene4: Scene4 | undefined = $state();
 
   let description = $derived(
     config.scene === 0 ? "Hands behind $isHandTracking if statement, child snippets for each hand." :
     config.scene === 1 ? "No $isHandTracking if statement, child snippets for each hand." :
-    "No $isHandTracking if statement, wrist snippets for each hand."
+    config.scene === 2 ? "No $isHandTracking if statement, wrist snippets for each hand." :
+    "The currentWritable model is overwritten with a custom call to XRHandModelFactory"
   );
 
   let expectedResult = $derived(
     config.scene === 0 ? "Child snippet Icosahedron appears instead of each hand mesh (turquoise left, pink right)" :
     config.scene === 1 ? "Child snippet Icosahedron appears instead of each hand mesh (turquoise left, pink right)" : 
-    "Hand mesh appears for each hand, with wrist snippet icosahedron on each wrist join (turquoise left, pink right)"
+    config.scene === 2 ? "Hand mesh appears for each hand, with wrist snippet icosahedron on each wrist join (turquoise left, pink right)" :
+    "The hand mesh appears for the left hand, and loads the onload function from the factory."
   );
 
   let actualResult = $derived(
-    config.scene === 0 ? "Uncaught ReferenceError: Cannot access 'inputSource' before initialization" : 
-    config.scene === 1 ? "Icosahedrons appear at origin (since we are using reference space local-floor, at our feet)" :
-    "Icosahedrons appear at origin (since we are using reference space local-floor, at our feet)" 
+    config.scene === 0 ? "Error: Uncaught ReferenceError: Cannot access 'inputSource' before initialization" : 
+    config.scene === 1 ? "Bug: Icosahedrons appear at origin (since we are using reference space local-floor, at our feet) and do not move with hand" :
+    config.scene === 2 ? "Bug: Icosahedrons appear at origin (since we are using reference space local-floor, at our feet) and do not move with hand" :
+    "Success: the hand mesh appears for the left hand, and loads the onload function from the factory."
   )
 </script>
 
@@ -37,9 +37,6 @@
 <Textarea bind:value={expectedResult} label="Expected result" rows={5} />
 <Textarea bind:value={actualResult} label="Actual result" rows={5} />
 
-{#if config.scene === 3}
-<Button title="Turn red" on:click={()=>scene4?.turnRed()} />
-  {/if}
 </Pane>
 <Canvas>
 
@@ -57,7 +54,7 @@
 
   {:else}
 
-  <Scene4 bind:this={scene4} />
+  <Scene4 />
 
   {/if}
 </Canvas>
