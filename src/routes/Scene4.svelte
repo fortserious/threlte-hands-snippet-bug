@@ -43,6 +43,3 @@ export async function turnRed()
 </Hand>
 
 <Hand right />
-
-<Controller left />
-<Controller right />
