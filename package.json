@@ -30,6 +30,7 @@
 		"@sveltejs/adapter-vercel": "^5.10.2",
 		"@threlte/core": "^8.1.5",
 		"@threlte/xr": "^1.0.8",
+		"svelte-tweakpane-ui": "^1.5.9",
 		"three": "^0.180.0"
 	}
 }
