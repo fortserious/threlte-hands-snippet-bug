@@ -1,11 +1,15 @@
-<script>
+<script lang="ts">
   import { Canvas } from '@threlte/core'
   import { VRButton, XR } from '@threlte/xr'
   import Scene from './Scene.svelte'
-  import { List, Pane, Textarea, ThemeUtils } from 'svelte-tweakpane-ui';
+  import { Button, List, Pane, Textarea, ThemeUtils } from 'svelte-tweakpane-ui';
   import { config } from '$lib/store.svelte';
   import Scene2 from './Scene2.svelte';
   import Scene3 from './Scene3.svelte';
+  import Scene4 from './Scene4.svelte';
+  import { label } from 'three/tsl';
+
+  let scene4: Scene4 | undefined = $state();
 
   let description = $derived(
     config.scene === 0 ? "Hands behind $isHandTracking if statement, child snippets for each hand." :
@@ -27,11 +31,15 @@
 </script>
 
 <Pane theme={ThemeUtils.presets.light} title="Settings">
-<List bind:value={config.scene} label="Scene" options={{"Scene 1": 0, "Scene 2": 1, "Scene 3": 2}} />
+<List bind:value={config.scene} label="Scene" options={{"Scene 1": 0, "Scene 2": 1, "Scene 3": 2, "Scene 4": 3}} />
 
 <Textarea bind:value={description} label="Description of scene" rows={5} />
 <Textarea bind:value={expectedResult} label="Expected result" rows={5} />
 <Textarea bind:value={actualResult} label="Actual result" rows={5} />
+
+{#if config.scene === 3}
+<Button title="Turn red" on:click={()=>scene4?.turnRed()} />
+  {/if}
 </Pane>
 <Canvas>
 
@@ -43,9 +51,13 @@
 
   <Scene2 />
 
-  {:else}
+  {:else if config.scene === 2}
 
   <Scene3 />
+
+  {:else}
+
+  <Scene4 bind:this={scene4} />
 
   {/if}
 </Canvas>
