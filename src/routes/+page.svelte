@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Canvas } from '@threlte/core'
+  import { Canvas, useThrelte } from '@threlte/core'
   import { VRButton } from '@threlte/xr'
   import Scene from './Scene.svelte'
   import { List, Pane, Textarea, ThemeUtils } from 'svelte-tweakpane-ui';
@@ -7,7 +7,11 @@
   import Scene2 from './Scene2.svelte';
   import Scene3 from './Scene3.svelte';
   import Scene4 from './Scene4.svelte';
+  import { onMount } from 'svelte';
+  import { Color } from 'three';
+  import Frame from './Frame.svelte';
 
+  
   let description = $derived(
     config.scene === 0 ? "Hands behind $isHandTracking if statement, child snippets for each hand." :
     config.scene === 1 ? "No $isHandTracking if statement, child snippets for each hand." :
@@ -27,7 +31,7 @@
     config.scene === 1 ? "Bug: Icosahedrons appear at origin (since we are using reference space local-floor, at our feet) and do not move with hand" :
     config.scene === 2 ? "Bug: Icosahedrons appear at origin (since we are using reference space local-floor, at our feet) and do not move with hand" :
     "Success: the hand mesh appears for the left hand, and loads the onload function from the factory."
-  )
+  )  
 </script>
 
 <Pane theme={ThemeUtils.presets.light} title="Settings">
@@ -40,6 +44,8 @@
 </Pane>
 <Canvas>
 
+  <Frame>
+
   {#if config.scene === 0}
 
   <Scene />
@@ -47,16 +53,18 @@
   {:else if config.scene === 1}
 
   <Scene2 />
-
+  
   {:else if config.scene === 2}
 
-  <Scene3 />
+    <Scene3 />
 
   {:else}
 
   <Scene4 />
 
   {/if}
+
+  </Frame>
 </Canvas>
 <VRButton />
 
